@@ -13,6 +13,7 @@ Route::get('/', function () {
 // Customer routes
 Route::get('/customers', [CustomerController::class, 'index'])->name('customers.index');
 Route::post('/customers', [CustomerController::class, 'store'])->name('customers.store');
+Route::post('/customers/{customer}/block', [CustomerController::class, 'block'])->name('customers.block');
 
 // Account routes
 Route::get('/accounts', [AccountController::class, 'index'])->name('accounts.index');

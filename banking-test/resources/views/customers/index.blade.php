@@ -101,10 +101,21 @@
             background: #d4edda;
             color: #155724;
         }
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+        }
         .empty-state {
             text-align: center;
             padding: 40px;
             color: #999;
+        }
+        .customer-actions {
+            margin-top: 10px;
+        }
+        .customer-actions form {
+            display: inline-block;
+            margin-right: 10px;
         }
     </style>
 </head>
@@ -118,6 +129,12 @@
         @if(session('success'))
             <div class="alert alert-success">
                 {{ session('success') }}
+            </div>
+        @endif
+
+        @if(session('error'))
+            <div class="alert alert-error">
+                {{ session('error') }}
             </div>
         @endif
 
@@ -155,6 +172,14 @@
                                 <span class="customer-status status-{{ $customer->status }}">
                                     Customer status: {{ ucfirst($customer->status) }}
                                 </span>
+                            </div>
+                            <div class="customer-actions">
+                                @if($customer->status === 'active')
+                                    <form action="{{ route('customers.block', $customer) }}" method="POST" style="display: inline;">
+                                        @csrf
+                                        <button type="submit" class="btn btn-warning">Block Customer</button>
+                                    </form>
+                                @endif
                             </div>
                         </div>
                     @endforeach

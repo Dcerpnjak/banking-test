@@ -55,7 +55,19 @@ class TransactionController extends Controller
     public function deposit(DepositRequest $request)
     {
         return DB::transaction(function () use ($request) {
-            $account = Account::findOrFail($request->account_id);
+            $account = Account::with('customer')->findOrFail($request->account_id);
+
+            // Validate customer is not blocked
+            if ($account->customer->status === 'blocked') {
+                $transaction = Transaction::create([
+                    'type' => 'deposit',
+                    'amount' => $request->amount,
+                    'target_account_id' => $account->id,
+                    'status' => 'rejected',
+                    'rejection_reason' => 'Customer is blocked',
+                ]);
+                return redirect()->back()->with('error', 'Customer is blocked. Transaction rejected.');
+            }
 
             // Validate account is active
             if ($account->status !== 'active') {
@@ -102,7 +114,19 @@ class TransactionController extends Controller
     public function withdraw(WithdrawRequest $request)
     {
         return DB::transaction(function () use ($request) {
-            $account = Account::findOrFail($request->account_id);
+            $account = Account::with('customer')->findOrFail($request->account_id);
+
+            // Validate customer is not blocked
+            if ($account->customer->status === 'blocked') {
+                $transaction = Transaction::create([
+                    'type' => 'withdrawal',
+                    'amount' => $request->amount,
+                    'source_account_id' => $account->id,
+                    'status' => 'rejected',
+                    'rejection_reason' => 'Customer is blocked',
+                ]);
+                return redirect()->back()->with('error', 'Customer is blocked. Transaction rejected.');
+            }
 
             // Validate account is active
             if ($account->status !== 'active') {
@@ -161,8 +185,34 @@ class TransactionController extends Controller
     public function transfer(TransferRequest $request)
     {
         return DB::transaction(function () use ($request) {
-            $sourceAccount = Account::findOrFail($request->source_account_id);
-            $targetAccount = Account::findOrFail($request->target_account_id);
+            $sourceAccount = Account::with('customer')->findOrFail($request->source_account_id);
+            $targetAccount = Account::with('customer')->findOrFail($request->target_account_id);
+
+            // Validate source customer is not blocked
+            if ($sourceAccount->customer->status === 'blocked') {
+                $transaction = Transaction::create([
+                    'type' => 'transfer',
+                    'amount' => $request->amount,
+                    'source_account_id' => $sourceAccount->id,
+                    'target_account_id' => $targetAccount->id,
+                    'status' => 'rejected',
+                    'rejection_reason' => 'Source customer is blocked',
+                ]);
+                return redirect()->back()->with('error', 'Source customer is blocked. Transaction rejected.');
+            }
+
+            // Validate target customer is not blocked
+            if ($targetAccount->customer->status === 'blocked') {
+                $transaction = Transaction::create([
+                    'type' => 'transfer',
+                    'amount' => $request->amount,
+                    'source_account_id' => $sourceAccount->id,
+                    'target_account_id' => $targetAccount->id,
+                    'status' => 'rejected',
+                    'rejection_reason' => 'Target customer is blocked',
+                ]);
+                return redirect()->back()->with('error', 'Target customer is blocked. Transaction rejected.');
+            }
 
             // Validate both accounts are active
             if ($sourceAccount->status !== 'active') {
