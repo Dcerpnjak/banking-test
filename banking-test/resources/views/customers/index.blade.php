@@ -39,16 +39,39 @@
             border: 1px solid #ddd;
             border-radius: 4px;
         }
-        button {
+        .btn, button.btn {
             background: #4CAF50;
             color: white;
             padding: 10px 20px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            transition: background 0.3s;
         }
-        button:hover {
+        .btn:hover, button.btn:hover {
             background: #45a049;
+        }
+        .btn-secondary {
+            background: #6c757d;
+        }
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        .btn-warning {
+            background: #ffc107;
+            color: #000;
+        }
+        .btn-warning:hover {
+            background: #e0a800;
+        }
+        .btn-danger {
+            background: #dc3545;
+        }
+        .btn-danger:hover {
+            background: #c82333;
         }
         .customer-item {
             border: 1px solid #ddd;
@@ -87,6 +110,9 @@
 </head>
 <body>
     <div class="container">
+        <div style="margin-bottom: 20px;">
+            <a href="{{ route('home') }}" style="color: #666; text-decoration: none;">← Home</a>
+        </div>
         <h1>Bank System - Customer Management</h1>
 
         @if(session('success'))
@@ -114,7 +140,7 @@
                         <option value="closed" {{ old('status') == 'closed' ? 'selected' : '' }}>Closed</option>
                     </select>
                 </div>
-                <button type="submit">Add Customer</button>
+                <button type="submit" class="btn">Add Customer</button>
             </form>
         </div>
 
