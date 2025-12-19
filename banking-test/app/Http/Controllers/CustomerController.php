@@ -1,0 +1,31 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Requests\StoreCustomerRequest;
+use App\Models\Customer;
+
+class CustomerController extends Controller
+{
+    /**
+     * Display a listing of customers.
+     */
+    public function index()
+    {
+        $customers = Customer::all();
+        return view('customers.index', compact('customers'));
+    }
+
+    /**
+     * Store a newly created customer.
+     */
+    public function store(StoreCustomerRequest $request)
+    {
+        $customer = Customer::create([
+            'name' => $request->name,
+            'status' => $request->status ?? 'active',
+        ]);
+
+        return redirect()->route('customers.index')->with('success', 'Customer created successfully!');
+    }
+}
