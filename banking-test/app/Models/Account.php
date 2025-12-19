@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Account extends Model
 {
@@ -27,5 +28,21 @@ class Account extends Model
     public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::class);
+    }
+
+    /**
+     * Get transactions where this account is the source.
+     */
+    public function sourceTransactions(): HasMany
+    {
+        return $this->hasMany(Transaction::class, 'source_account_id');
+    }
+
+    /**
+     * Get transactions where this account is the target.
+     */
+    public function targetTransactions(): HasMany
+    {
+        return $this->hasMany(Transaction::class, 'target_account_id');
     }
 }

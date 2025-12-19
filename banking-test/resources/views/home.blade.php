@@ -78,6 +78,9 @@
         .menu-item.accounts:hover {
             background: #1976D2;
         }
+        .menu-item[style*="background: #9C27B0"]:hover {
+            background: #7B1FA2 !important;
+        }
     </style>
 </head>
 <body>
@@ -91,6 +94,9 @@
             </a>
             <a href="{{ route('accounts.index') }}" class="menu-item accounts">
                 Accounts
+            </a>
+            <a href="{{ route('transactions.index') }}" class="menu-item" style="background: #9C27B0;">
+                Transactions
             </a>
         </div>
     </div>
