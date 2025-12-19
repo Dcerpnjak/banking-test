@@ -49,7 +49,7 @@
                 </span>
             </div>
             <div class="balance">
-                Balance: {{ number_format($account->balance, 2) }} {{ $account->currency }}
+                Balance: {{ number_format($account->balance, 2, ',', '.') }} {{ $account->currency }}
             </div>
         </div>
 
@@ -78,7 +78,7 @@
                             <div>
                                 <span class="transaction-type">{{ ucfirst($transaction->type) }}</span>
                                 <span class="transaction-amount {{ $transaction->status === 'success' ? 'transaction-success' : 'transaction-rejected' }}">
-                                    {{ $transaction->status === 'success' ? '+' : '' }}{{ number_format($transaction->amount, 2) }} {{ $account->currency }}
+                                    {{ $transaction->status === 'success' ? '+' : '' }}{{ number_format($transaction->amount, 2, ',', '.') }} {{ $account->currency }}
                                 </span>
                             </div>
                             <div>

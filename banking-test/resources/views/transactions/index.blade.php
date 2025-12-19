@@ -39,7 +39,7 @@
                             <div>
                                 <span class="transaction-type">{{ ucfirst($transaction->type) }}</span>
                                 <span class="transaction-amount {{ $transaction->status === 'rejected' ? 'rejected' : '' }}">
-                                    {{ number_format($transaction->amount, 2) }}
+                                    {{ number_format($transaction->amount, 2, ',', '.') }}
                                     @if($transaction->targetAccount)
                                         {{ $transaction->targetAccount->currency }}
                                     @elseif($transaction->sourceAccount)

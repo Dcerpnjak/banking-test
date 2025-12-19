@@ -78,7 +78,7 @@
                             <strong>Currency:</strong> {{ $account->currency }}
                         </div>
                         <div class="account-info">
-                            <strong>Balance:</strong> {{ number_format($account->balance, 2) }} {{ $account->currency }}
+                            <strong>Balance:</strong> {{ number_format($account->balance, 2, ',', '.') }} {{ $account->currency }}
                         </div>
                     </div>
                 @endforeach

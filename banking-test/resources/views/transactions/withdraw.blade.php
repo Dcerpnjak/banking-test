@@ -27,7 +27,7 @@
                     <option value="">Select an account</option>
                     @foreach($accounts as $account)
                         <option value="{{ $account->id }}" {{ old('account_id') == $account->id ? 'selected' : '' }}>
-                            Account ID: {{ $account->id }} - {{ $account->customer->name }} (Balance: {{ number_format($account->balance, 2) }} {{ $account->currency }})
+                            Account ID: {{ $account->id }} - {{ $account->customer->name }} (Balance: {{ number_format($account->balance, 2, ',', '.') }} {{ $account->currency }})
                         </option>
                     @endforeach
                 </select>
