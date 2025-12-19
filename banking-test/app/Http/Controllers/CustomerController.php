@@ -12,7 +12,7 @@ class CustomerController extends Controller
      */
     public function index()
     {
-        $customers = Customer::all();
+        $customers = Customer::with('accounts')->get();
         return view('customers.index', compact('customers'));
     }
 
@@ -54,5 +54,27 @@ class CustomerController extends Controller
         $customer->accounts()->where('status', '!=', 'closed')->update(['status' => 'blocked']);
 
         return redirect()->back()->with('success', 'Customer and all associated accounts blocked successfully!');
+    }
+
+    /**
+     * Close a customer (only if all accounts are closed).
+     */
+    public function close(Customer $customer)
+    {
+        if ($customer->status === 'closed') {
+            return redirect()->back()->with('error', 'Customer is already closed.');
+        }
+
+        // Check if customer has any accounts that are not closed
+        $hasNonClosedAccounts = $customer->accounts()->where('status', '!=', 'closed')->exists();
+
+        if ($hasNonClosedAccounts) {
+            return redirect()->back()->with('error', 'Cannot close customer. All accounts must be closed first.');
+        }
+
+        // Close customer
+        $customer->update(['status' => 'closed']);
+
+        return redirect()->back()->with('success', 'Customer closed successfully!');
     }
 }

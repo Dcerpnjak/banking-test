@@ -50,6 +50,12 @@
                     <button type="submit" class="btn btn-warning">Block Customer</button>
                 </form>
             @endif
+            @if($customer->status !== 'closed' && $customer->accounts->where('status', '!=', 'closed')->count() === 0)
+                <form action="{{ route('customers.close', $customer) }}" method="POST" style="display: inline;">
+                    @csrf
+                    <button type="submit" class="btn btn-danger">Close Customer</button>
+                </form>
+            @endif
         </div>
 
         <div class="accounts-section">

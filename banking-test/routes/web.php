@@ -15,6 +15,7 @@ Route::get('/customers', [CustomerController::class, 'index'])->name('customers.
 Route::post('/customers', [CustomerController::class, 'store'])->name('customers.store');
 Route::get('/customers/{customer}', [CustomerController::class, 'show'])->name('customers.show');
 Route::post('/customers/{customer}/block', [CustomerController::class, 'block'])->name('customers.block');
+Route::post('/customers/{customer}/close', [CustomerController::class, 'close'])->name('customers.close');
 
 // Account routes
 Route::get('/accounts', [AccountController::class, 'index'])->name('accounts.index');
