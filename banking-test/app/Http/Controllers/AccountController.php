@@ -44,6 +44,23 @@ class AccountController extends Controller
     }
 
     /**
+     * Display the specified account.
+     */
+    public function show(Account $account)
+    {
+        $account->load('customer');
+        $transactions = \App\Models\Transaction::with(['sourceAccount', 'targetAccount'])
+            ->where(function($query) use ($account) {
+                $query->where('source_account_id', $account->id)
+                      ->orWhere('target_account_id', $account->id);
+            })
+            ->orderBy('created_at', 'desc')
+            ->get();
+        
+        return view('accounts.show', compact('account', 'transactions'));
+    }
+
+    /**
      * Block an account.
      */
     public function block(Account $account)

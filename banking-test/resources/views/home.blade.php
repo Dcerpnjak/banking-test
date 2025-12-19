@@ -19,7 +19,7 @@
             text-align: center;
         }
         h1 {
-            margin-bottom: 10px;
+            margin-bottom: 40px;
             color: #333;
         }
         .subtitle {
@@ -86,7 +86,6 @@
 <body>
     <div class="container">
         <h1>Bank System</h1>
-        <p class="subtitle">Welcome to the Banking Management System</p>
         
         <div class="menu">
             <a href="{{ route('customers.index') }}" class="menu-item">

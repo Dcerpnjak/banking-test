@@ -105,6 +105,13 @@
             padding: 40px;
             color: #999;
         }
+        a.link {
+            color: #2196F3;
+            text-decoration: underline;
+        }
+        a.link:hover {
+            color: #1976D2;
+        }
     </style>
 </head>
 <body>
@@ -160,18 +167,18 @@
                         </div>
                         @if($transaction->type === 'deposit' && $transaction->targetAccount)
                             <div class="transaction-info">
-                                <strong>To Account:</strong> {{ $transaction->targetAccount->id }} ({{ $transaction->targetAccount->customer->name }})
+                                <strong>To Account:</strong> <a href="{{ route('accounts.show', $transaction->targetAccount) }}" class="link">{{ $transaction->targetAccount->id }}</a> (<a href="{{ route('customers.show', $transaction->targetAccount->customer) }}" class="link">{{ $transaction->targetAccount->customer->name }}</a>)
                             </div>
                         @elseif($transaction->type === 'withdrawal' && $transaction->sourceAccount)
                             <div class="transaction-info">
-                                <strong>From Account:</strong> {{ $transaction->sourceAccount->id }} ({{ $transaction->sourceAccount->customer->name }})
+                                <strong>From Account:</strong> <a href="{{ route('accounts.show', $transaction->sourceAccount) }}" class="link">{{ $transaction->sourceAccount->id }}</a> (<a href="{{ route('customers.show', $transaction->sourceAccount->customer) }}" class="link">{{ $transaction->sourceAccount->customer->name }}</a>)
                             </div>
                         @elseif($transaction->type === 'transfer')
                             <div class="transaction-info">
-                                <strong>From Account:</strong> {{ $transaction->sourceAccount->id }} ({{ $transaction->sourceAccount->customer->name }})
+                                <strong>From Account:</strong> <a href="{{ route('accounts.show', $transaction->sourceAccount) }}" class="link">{{ $transaction->sourceAccount->id }}</a> (<a href="{{ route('customers.show', $transaction->sourceAccount->customer) }}" class="link">{{ $transaction->sourceAccount->customer->name }}</a>)
                             </div>
                             <div class="transaction-info">
-                                <strong>To Account:</strong> {{ $transaction->targetAccount->id }} ({{ $transaction->targetAccount->customer->name }})
+                                <strong>To Account:</strong> <a href="{{ route('accounts.show', $transaction->targetAccount) }}" class="link">{{ $transaction->targetAccount->id }}</a> (<a href="{{ route('customers.show', $transaction->targetAccount->customer) }}" class="link">{{ $transaction->targetAccount->customer->name }}</a>)
                             </div>
                         @endif
                         @if($transaction->rejection_reason)

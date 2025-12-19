@@ -17,6 +17,15 @@ class CustomerController extends Controller
     }
 
     /**
+     * Display the specified customer.
+     */
+    public function show(Customer $customer)
+    {
+        $customer->load('accounts');
+        return view('customers.show', compact('customer'));
+    }
+
+    /**
      * Store a newly created customer.
      */
     public function store(StoreCustomerRequest $request)

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bank System - Accounts</title>
+    <title>Customer Details</title>
     <style>
         body {
             font-family: sans-serif;
@@ -20,8 +20,31 @@
         h1 {
             margin-bottom: 20px;
         }
-        .header-actions {
-            margin-bottom: 20px;
+        .customer-details {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 30px;
+        }
+        .detail-row {
+            margin-bottom: 10px;
+        }
+        .detail-label {
+            font-weight: bold;
+            display: inline-block;
+            width: 150px;
+        }
+        .customer-status {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+        .status-active { background: #d4edda; color: #155724; }
+        .status-blocked { background: #f8d7da; color: #721c24; }
+        .status-closed { background: #e2e3e5; color: #383d41; }
+        .customer-actions {
+            margin-top: 20px;
         }
         .btn, button.btn {
             background: #4CAF50;
@@ -34,6 +57,7 @@
             display: inline-block;
             font-size: 14px;
             transition: background 0.3s;
+            margin-right: 10px;
         }
         .btn:hover, button.btn:hover {
             background: #45a049;
@@ -51,11 +75,8 @@
         .btn-warning:hover {
             background: #e0a800;
         }
-        .btn-danger {
-            background: #dc3545;
-        }
-        .btn-danger:hover {
-            background: #c82333;
+        .accounts-section {
+            margin-top: 30px;
         }
         .account-item {
             border: 1px solid #ddd;
@@ -69,10 +90,6 @@
             align-items: center;
             margin-bottom: 10px;
         }
-        .account-id {
-            font-weight: bold;
-            color: #666;
-        }
         .account-info {
             margin-bottom: 5px;
         }
@@ -81,16 +98,6 @@
             padding: 4px 10px;
             border-radius: 12px;
             font-size: 12px;
-        }
-        .status-active { background: #d4edda; color: #155724; }
-        .status-blocked { background: #f8d7da; color: #721c24; }
-        .status-closed { background: #e2e3e5; color: #383d41; }
-        .account-actions {
-            margin-top: 10px;
-        }
-        .account-actions a, .account-actions form {
-            display: inline-block;
-            margin-right: 10px;
         }
         .alert {
             padding: 12px;
@@ -121,7 +128,10 @@
 </head>
 <body>
     <div class="container">
-        <h1>Bank System - Account Management</h1>
+        <div style="margin-bottom: 20px;">
+            <a href="{{ route('home') }}" style="color: #666; text-decoration: none;">← Home</a>
+        </div>
+        <h1>Customer Details</h1>
 
         @if(session('success'))
             <div class="alert alert-success">
@@ -135,25 +145,45 @@
             </div>
         @endif
 
-        <div style="margin-bottom: 20px;">
-            <a href="{{ route('home') }}" style="color: #666; text-decoration: none;">← Home</a>
-        </div>
-        <div class="header-actions">
-            <a href="{{ route('accounts.create') }}" class="btn">Open New Account</a>
+        <div class="customer-details">
+            <div class="detail-row">
+                <span class="detail-label">Customer ID:</span>
+                {{ $customer->id }}
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Name:</span>
+                {{ $customer->name }}
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Status:</span>
+                <span class="customer-status status-{{ $customer->status }}">
+                    {{ ucfirst($customer->status) }}
+                </span>
+            </div>
         </div>
 
-        <div class="accounts-list">
-            @if($accounts->count() > 0)
-                @foreach($accounts as $account)
+        <div class="customer-actions">
+            <a href="{{ route('customers.index') }}" class="btn btn-secondary">Back to Customers</a>
+            @if($customer->status === 'active')
+                <form action="{{ route('customers.block', $customer) }}" method="POST" style="display: inline;">
+                    @csrf
+                    <button type="submit" class="btn btn-warning">Block Customer</button>
+                </form>
+            @endif
+        </div>
+
+        <div class="accounts-section">
+            <h2>Accounts</h2>
+            @if($customer->accounts->count() > 0)
+                @foreach($customer->accounts as $account)
                     <div class="account-item">
                         <div class="account-header">
-                            <div class="account-id">Account ID: <a href="{{ route('accounts.show', $account) }}" class="link">{{ $account->id }}</a></div>
+                            <div>
+                                <strong>Account ID:</strong> <a href="{{ route('accounts.show', $account) }}" class="link">{{ $account->id }}</a>
+                            </div>
                             <span class="account-status status-{{ $account->status }}">
                                 {{ ucfirst($account->status) }}
                             </span>
-                        </div>
-                        <div class="account-info">
-                            <strong>Customer:</strong> <a href="{{ route('customers.show', $account->customer) }}" class="link">{{ $account->customer->name }}</a> (ID: <a href="{{ route('customers.show', $account->customer) }}" class="link">{{ $account->customer->id }}</a>)
                         </div>
                         <div class="account-info">
                             <strong>Type:</strong> {{ ucfirst($account->account_type) }}
@@ -164,25 +194,11 @@
                         <div class="account-info">
                             <strong>Balance:</strong> {{ number_format($account->balance, 2) }} {{ $account->currency }}
                         </div>
-                        <div class="account-actions">
-                            @if($account->status === 'active')
-                                <form action="{{ route('accounts.block', $account) }}" method="POST" style="display: inline;">
-                                    @csrf
-                                    <button type="submit" class="btn btn-warning">Block Account</button>
-                                </form>
-                            @endif
-                            @if($account->status !== 'closed' && $account->balance == 0)
-                                <form action="{{ route('accounts.close', $account) }}" method="POST" style="display: inline;">
-                                    @csrf
-                                    <button type="submit" class="btn btn-danger">Close Account</button>
-                                </form>
-                            @endif
-                        </div>
                     </div>
                 @endforeach
             @else
                 <div class="empty-state">
-                    No accounts found.
+                    No accounts found for this customer.
                 </div>
             @endif
         </div>

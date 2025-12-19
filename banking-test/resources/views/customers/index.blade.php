@@ -110,6 +110,13 @@
             padding: 40px;
             color: #999;
         }
+        a.link {
+            color: #2196F3;
+            text-decoration: underline;
+        }
+        a.link:hover {
+            color: #1976D2;
+        }
         .customer-actions {
             margin-top: 10px;
         }
@@ -168,7 +175,7 @@
                     @foreach($customers as $customer)
                         <div class="customer-item">
                             <div class="customer-info">
-                                <div class="customer-name">Customer ID: {{ $customer->id }} | Customer Name: {{ $customer->name }}</div>
+                                <div class="customer-name">Customer ID: <a href="{{ route('customers.show', $customer) }}" class="link">{{ $customer->id }}</a> | Customer Name: <a href="{{ route('customers.show', $customer) }}" class="link">{{ $customer->name }}</a></div>
                                 <span class="customer-status status-{{ $customer->status }}">
                                     Customer status: {{ ucfirst($customer->status) }}
                                 </span>
